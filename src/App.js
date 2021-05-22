@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Switch,useHistory } from "react-router-dom";
+import Header from "./components/header/Header";
+import HomePage from "./components/home-page/HomePage";
+import SignInPage from "./components/signin-page/SignInPage";
+import {auth,db} from './firebase/firebaseFunction'
+import {useState,useEffect} from 'react'
 
 function App() {
+  const [currentUser,setUser] = useState()
+  const [weightList, updateWeightList] = useState([])
+
+  const history = useHistory()
+
+  useEffect(()=>{ 
+      auth.onAuthStateChanged(user=>{
+        if (user) {
+          console.log(user)
+          setUser(user)
+          var unsub = db.collection('users').doc(user.uid).collection('weightList').orderBy("created",'desc')
+              .onSnapshot((querySnapshot) => {
+                  updateWeightList(querySnapshot.docs)
+              })
+          history.push('/')
+          return unsub
+      }
+      else {
+          updateWeightList([])
+      }
+    })
+  },[history])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header currentUser={currentUser}/>
+      <Switch>
+        <Route path="/" exact>
+          <HomePage weightList={weightList}/>
+        </Route>
+        <Route path="/signin">
+          <SignInPage />
+        </Route>
+      </Switch>
+      <p className='credit'>Made with ❤️ by Abhishek Mohanty</p>
     </div>
   );
 }

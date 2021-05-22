@@ -1,0 +1,35 @@
+.sign-in-page {
+  text-align: center;
+  padding: 2em 1em;
+
+  .button-container{
+      width: 40%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2em auto;
+
+      button{
+          min-width: 15em;
+          padding:.5em 1em;
+          border:none;
+          border-radius:10em;
+          cursor: pointer;
+          box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.301);
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+            &:hover{
+                box-shadow: 1px 1px 7px rgba(0, 0, 0, 0.301);
+            }
+
+          &:active{
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.301);
+          }
+      }
+  }
+}
+
+
