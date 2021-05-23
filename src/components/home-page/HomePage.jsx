@@ -1,22 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { auth, db } from '../../firebase/firebaseFunction'
+import React, { useState } from 'react'
+import { db } from '../../firebase/firebaseFunction'
 import WeightCard from './weight-card/WeightCard'
 import './home-page.scss'
 
-function HomePage({ weightList }) {
+function HomePage({ currentUser, weightList }) {
     const [input, changeInput] = useState('')
-
-
-    useEffect(() => {
-        console.log(auth.currentUser)
-
-    }, [])
 
     const onSubmit = (e) => {
         e.preventDefault();
-        if (auth.currentUser) {
+        if (currentUser) {
             var d = new Date()
-            db.collection('users').doc(auth.currentUser.uid).collection('weightList').add({ text: input, created: d.toLocaleString() })
+            db.collection('users').doc(currentUser.uid).collection('weightList').add({ text: input, created: d.toLocaleString() })
         }
         else {
             alert('you are not signed in!')

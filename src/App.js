@@ -13,15 +13,13 @@ function App() {
 
   useEffect(()=>{ 
       auth.onAuthStateChanged(user=>{
+        setUser(user)
         if (user) {
-          console.log(user)
-          setUser(user)
-          var unsub = db.collection('users').doc(user.uid).collection('weightList').orderBy("created",'desc')
+          db.collection('users').doc(user.uid).collection('weightList').orderBy("created",'desc')
               .onSnapshot((querySnapshot) => {
                   updateWeightList(querySnapshot.docs)
               })
           history.push('/')
-          return unsub
       }
       else {
           updateWeightList([])
@@ -34,7 +32,7 @@ function App() {
       <Header currentUser={currentUser}/>
       <Switch>
         <Route path="/" exact>
-          <HomePage weightList={weightList}/>
+          <HomePage currentUser={currentUser} weightList={weightList}/>
         </Route>
         <Route path="/signin">
           <SignInPage />
