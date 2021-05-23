@@ -1,10 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { db } from '../../firebase/firebaseFunction'
 import WeightCard from './weight-card/WeightCard'
 import './home-page.scss'
 
-function HomePage({ currentUser, weightList }) {
+function HomePage({ currentUser }) {
     const [input, changeInput] = useState('')
+    const [weightList, updateWeightList] = useState([])
+
+    useEffect(() => {
+        if (currentUser) {
+            var unsub = db.collection('users').doc(currentUser.uid).collection('weightList').orderBy("created", 'desc')
+                .onSnapshot((querySnapshot) => {
+                    updateWeightList(querySnapshot.docs)
+                })
+
+            return unsub
+        }
+        else {
+            updateWeightList([])
+        }
+    }, [currentUser])
 
     const onSubmit = (e) => {
         e.preventDefault();
